@@ -6,41 +6,34 @@ export const StarBackground = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
+    let animationFrame;
+    let stars = [];
     
     // Set canvas size
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      generateStars(); // Regenerate stars when window resizes
+      initializeStars();
     };
     
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    generateStars();
-
-    // Create stars with no gaps
-    let stars = [];
-    
-    const generateStars = () => {
+    // Initialize stars
+    const initializeStars = () => {
       stars = [];
-      const numStars = Math.floor((canvas.width * canvas.height) / 8000); // Density based on screen size
+      const numStars = Math.floor((canvas.width * canvas.height) / 8000);
       
       for (let i = 0; i < numStars; i++) {
         stars.push({
-          x: Math.random() * (canvas.width + 200), // Extra width to prevent gaps
+          x: Math.random() * (canvas.width + 200),
           y: Math.random() * canvas.height,
           radius: Math.random() * 2 + 0.5,
           opacity: Math.random() * 0.8 + 0.2,
           twinkleSpeed: Math.random() * 0.02 + 0.01,
-          driftSpeed: Math.random() * 0.3 + 0.1,
-          initialX: Math.random() * (canvas.width + 200)
+          driftSpeed: Math.random() * 0.3 + 0.1
         });
       }
     };
 
     // Animation loop
-    let animationFrame;
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
@@ -51,7 +44,7 @@ export const StarBackground = () => {
           star.twinkleSpeed *= -1;
         }
         
-        // Continuous drift effect - no gaps
+        // Continuous drift effect
         star.x -= star.driftSpeed;
         if (star.x < -20) {
           star.x = canvas.width + 20;
@@ -76,6 +69,9 @@ export const StarBackground = () => {
       animationFrame = requestAnimationFrame(animate);
     };
     
+    // Initialize
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
     animate();
 
     return () => {
