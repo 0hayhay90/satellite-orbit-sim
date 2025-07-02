@@ -68,6 +68,29 @@ const Simulator = () => {
   // Get current planet data
   const currentPlanet = planets[selectedPlanet];
   
+  // Get zoom limits for current planet
+  const getZoomLimits = () => {
+    switch(selectedPlanet) {
+      case 'jupiter':
+        return { min: 0.0005, max: 0.005 }; // 5.0x max zoom in, wide zoom out for max altitude view
+      case 'mars':
+        return { min: 0.001, max: 0.1 }; // 100.0x max zoom in, 10.0x zoom out cap
+      case 'earth':
+        return { min: 0.006, max: 0.05 }; // 50.0x max zoom in, 5.0x zoom out cap
+      case 'moon':
+        return { min: 0.002, max: 0.1 }; // 100.0x max zoom in, 20.0x zoom out cap
+      default:
+        return { min: 0.005, max: 0.1 };
+    }
+  };
+  
+  // Smart zoom increment calculation
+  const getZoomIncrement = (currentZoom, direction) => {
+    // Use logarithmic scaling for smooth zoom
+    const factor = direction === 'in' ? 1.3 : 0.77; // ~30% increment/decrement
+    return currentZoom * factor;
+  };
+  
   // Unit conversion functions
   const convertDistance = (km) => {
     return isMetric ? km : km * 0.621371; // km to miles
