@@ -162,6 +162,26 @@ const Simulator = () => {
   const handlePlanetChange = (planet) => {
     setSelectedPlanet(planet);
     setSelectedPreset('custom');
+    
+    // Auto-adjust zoom based on planet size
+    let newZoom;
+    switch(planet) {
+      case 'jupiter':
+        newZoom = 0.005; // Much smaller zoom for Jupiter's massive size
+        break;
+      case 'mars':
+        newZoom = 0.04; // Slightly larger zoom for smaller Mars
+        break;
+      case 'moon':
+        newZoom = 0.08; // Much larger zoom for tiny Moon
+        break;
+      case 'earth':
+      default:
+        newZoom = 0.03; // Default zoom for Earth
+        break;
+    }
+    setZoomLevel(newZoom);
+    
     // Reset to low orbit for new planet
     const newAltitude = Math.max(200, planets[planet].radius * 0.05);
     const newVelocity = Math.sqrt(G * planets[planet].mass / ((planets[planet].radius + newAltitude) * 1000)) / 1000;
