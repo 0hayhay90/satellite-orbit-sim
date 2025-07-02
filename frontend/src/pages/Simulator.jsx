@@ -91,19 +91,44 @@ const Simulator = () => {
     return currentZoom * factor;
   };
   
-  // Calculate animation speed based on orbital velocity (physics accurate)
+  // Calculate animation speed based on orbital velocity and period (physics accurate)
   const calculateAnimationSpeed = () => {
     const orbitalVel = calculateOrbitalVelocity(satellite.altitude, satellite.mass);
-    const earthOrbitalVel = 7.66; // km/s for ISS as reference
-    const baseSpeed = 0.02;
+    const orbitalPeriod = calculateOrbitalPeriod(satellite.altitude, satellite.mass);
     
-    // Scale animation speed with orbital velocity (higher altitude = slower)
-    // Use a more dramatic scaling factor to make the difference very noticeable
-    const speedFactor = Math.pow(orbitalVel / earthOrbitalVel, 1.5); // Exponent makes difference more dramatic
-    const scaledSpeed = baseSpeed * speedFactor;
+    // Reference values for scaling (Earth ISS orbit)
+    const referenceVel = 7.66; // km/s for ISS
+    const referencePeriod = 1.54; // hours for ISS
     
-    // Ensure minimum and maximum bounds for visibility
-    return Math.max(0.005, Math.min(0.08, scaledSpeed));
+    // Calculate speed factors
+    const velocityFactor = orbitalVel / referenceVel;
+    const periodFactor = referencePeriod / orbitalPeriod; // Inverse: shorter period = faster
+    
+    // Combine both factors with dramatic scaling
+    const combinedFactor = Math.pow(velocityFactor * periodFactor, 2); // Square for more dramatic effect
+    
+    // Base animation speed adjusted per planet
+    let baseSpeed;
+    switch(selectedPlanet) {
+      case 'jupiter':
+        baseSpeed = 0.015; // Slower base for massive Jupiter
+        break;
+      case 'mars':
+        baseSpeed = 0.025; // Faster base for smaller Mars
+        break;
+      case 'moon':
+        baseSpeed = 0.035; // Fastest base for tiny Moon
+        break;
+      case 'earth':
+      default:
+        baseSpeed = 0.02; // Standard base for Earth
+        break;
+    }
+    
+    const finalSpeed = baseSpeed * combinedFactor;
+    
+    // Ensure very noticeable bounds - much wider range
+    return Math.max(0.002, Math.min(0.15, finalSpeed));
   };
   
   // Unit conversion functions
