@@ -17,6 +17,8 @@ export const StarBackground = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
+    generateStars();
+
     // Create stars with no gaps
     let stars = [];
     
