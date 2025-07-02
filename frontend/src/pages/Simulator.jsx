@@ -202,7 +202,7 @@ const Simulator = () => {
     let newZoom;
     switch(planet) {
       case 'jupiter':
-        newZoom = 0.005; // Much smaller zoom for Jupiter's massive size
+        newZoom = 0.001; // Conservative zoom for Jupiter's massive size
         break;
       case 'mars':
         newZoom = 0.04; // Slightly larger zoom for smaller Mars
