@@ -37,8 +37,6 @@ export const StarBackground = () => {
       }
     };
 
-    generateStars();
-
     // Animation loop
     let animationFrame;
     const animate = () => {
