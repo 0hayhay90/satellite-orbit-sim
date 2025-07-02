@@ -11,25 +11,33 @@ export const StarBackground = () => {
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      generateStars(); // Regenerate stars when window resizes
     };
     
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Create stars
-    const stars = [];
-    const numStars = 150;
+    // Create stars with no gaps
+    let stars = [];
     
-    for (let i = 0; i < numStars; i++) {
-      stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        radius: Math.random() * 2 + 0.5,
-        opacity: Math.random() * 0.8 + 0.2,
-        twinkleSpeed: Math.random() * 0.02 + 0.01,
-        driftSpeed: Math.random() * 0.2 + 0.1
-      });
-    }
+    const generateStars = () => {
+      stars = [];
+      const numStars = Math.floor((canvas.width * canvas.height) / 8000); // Density based on screen size
+      
+      for (let i = 0; i < numStars; i++) {
+        stars.push({
+          x: Math.random() * (canvas.width + 200), // Extra width to prevent gaps
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 2 + 0.5,
+          opacity: Math.random() * 0.8 + 0.2,
+          twinkleSpeed: Math.random() * 0.02 + 0.01,
+          driftSpeed: Math.random() * 0.3 + 0.1,
+          initialX: Math.random() * (canvas.width + 200)
+        });
+      }
+    };
+
+    generateStars();
 
     // Animation loop
     let animationFrame;
@@ -43,10 +51,10 @@ export const StarBackground = () => {
           star.twinkleSpeed *= -1;
         }
         
-        // Drift effect
+        // Continuous drift effect - no gaps
         star.x -= star.driftSpeed;
-        if (star.x < -10) {
-          star.x = canvas.width + 10;
+        if (star.x < -20) {
+          star.x = canvas.width + 20;
           star.y = Math.random() * canvas.height;
         }
         
