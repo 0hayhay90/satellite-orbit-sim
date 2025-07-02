@@ -28,6 +28,7 @@ const Simulator = () => {
   // Animation state
   const [angle, setAngle] = useState(0);
   const [orbitHistory, setOrbitHistory] = useState([]);
+  const [animationSpeed, setAnimationSpeed] = useState(0.02);
   
   // Planet data
   const planets = {
