@@ -72,7 +72,7 @@ const Simulator = () => {
   const getZoomLimits = () => {
     switch(selectedPlanet) {
       case 'jupiter':
-        return { min: 0.0005, max: 0.005 }; // 5.0x max zoom in, wide zoom out for max altitude view
+        return { min: 0.0003, max: 0.005 }; // 5.0x max zoom in, zoom out to see max altitude
       case 'mars':
         return { min: 0.001, max: 0.1 }; // 100.0x max zoom in, 10.0x zoom out cap
       case 'earth':
@@ -87,8 +87,19 @@ const Simulator = () => {
   // Smart zoom increment calculation
   const getZoomIncrement = (currentZoom, direction) => {
     // Use logarithmic scaling for smooth zoom
-    const factor = direction === 'in' ? 1.3 : 0.77; // ~30% increment/decrement
+    const factor = direction === 'in' ? 1.2 : 0.83; // ~20% increment/decrement for smooth transitions
     return currentZoom * factor;
+  };
+  
+  // Calculate animation speed based on orbital velocity (physics accurate)
+  const calculateAnimationSpeed = () => {
+    const orbitalVel = calculateOrbitalVelocity(satellite.altitude, satellite.mass);
+    const earthOrbitalVel = 7.66; // km/s for ISS as reference
+    const baseSpeed = 0.02;
+    
+    // Scale animation speed inversely with orbital velocity (higher altitude = slower)
+    const speedFactor = orbitalVel / earthOrbitalVel;
+    return baseSpeed * speedFactor;
   };
   
   // Unit conversion functions
