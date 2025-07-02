@@ -342,7 +342,8 @@ const Simulator = () => {
   useEffect(() => {
     if (isRunning) {
       const animate = () => {
-        setAngle(prev => prev + 0.02);
+        const currentAnimSpeed = calculateAnimationSpeed();
+        setAngle(prev => prev + currentAnimSpeed);
         drawSimulation();
         animationRef.current = requestAnimationFrame(animate);
       };
