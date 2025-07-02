@@ -97,9 +97,13 @@ const Simulator = () => {
     const earthOrbitalVel = 7.66; // km/s for ISS as reference
     const baseSpeed = 0.02;
     
-    // Scale animation speed inversely with orbital velocity (higher altitude = slower)
-    const speedFactor = orbitalVel / earthOrbitalVel;
-    return baseSpeed * speedFactor;
+    // Scale animation speed with orbital velocity (higher altitude = slower)
+    // Use a more dramatic scaling factor to make the difference very noticeable
+    const speedFactor = Math.pow(orbitalVel / earthOrbitalVel, 1.5); // Exponent makes difference more dramatic
+    const scaledSpeed = baseSpeed * speedFactor;
+    
+    // Ensure minimum and maximum bounds for visibility
+    return Math.max(0.005, Math.min(0.08, scaledSpeed));
   };
   
   // Unit conversion functions
