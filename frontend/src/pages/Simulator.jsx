@@ -206,17 +206,130 @@ const Simulator = () => {
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Draw planet
+    // Draw planet with realistic appearance
     const planetRadius = currentPlanet.radius * zoomLevel;
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, planetRadius, 0, 2 * Math.PI);
     
-    // Planet gradient
-    const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, planetRadius);
-    gradient.addColorStop(0, currentPlanet.color[1]);
-    gradient.addColorStop(1, currentPlanet.color[0]);
-    ctx.fillStyle = gradient;
-    ctx.fill();
+    // Create planet with texture-like appearance
+    const gradient = ctx.createRadialGradient(
+      centerX - planetRadius * 0.3, 
+      centerY - planetRadius * 0.3, 
+      0, 
+      centerX, 
+      centerY, 
+      planetRadius
+    );
+    
+    // Planet-specific gradients and features
+    switch(selectedPlanet) {
+      case 'earth':
+        gradient.addColorStop(0, '#87ceeb'); // Light blue (water)
+        gradient.addColorStop(0.3, '#32cd32'); // Green (land)
+        gradient.addColorStop(0.6, '#4682b4'); // Steel blue (oceans)
+        gradient.addColorStop(1, '#191970'); // Midnight blue (deep ocean)
+        
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, planetRadius, 0, 2 * Math.PI);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        
+        // Add continents as darker patches
+        ctx.fillStyle = 'rgba(34, 139, 34, 0.6)';
+        ctx.beginPath();
+        ctx.arc(centerX + planetRadius * 0.2, centerY - planetRadius * 0.3, planetRadius * 0.4, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(centerX - planetRadius * 0.4, centerY + planetRadius * 0.2, planetRadius * 0.3, 0, 2 * Math.PI);
+        ctx.fill();
+        break;
+        
+      case 'mars':
+        gradient.addColorStop(0, '#cd853f'); // Sandy brown
+        gradient.addColorStop(0.4, '#a0522d'); // Sienna
+        gradient.addColorStop(0.7, '#8b4513'); // Saddle brown
+        gradient.addColorStop(1, '#654321'); // Dark brown
+        
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, planetRadius, 0, 2 * Math.PI);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        
+        // Add polar ice caps
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.beginPath();
+        ctx.arc(centerX, centerY - planetRadius * 0.8, planetRadius * 0.2, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(centerX, centerY + planetRadius * 0.8, planetRadius * 0.15, 0, 2 * Math.PI);
+        ctx.fill();
+        break;
+        
+      case 'jupiter':
+        // Jupiter's bands
+        for (let i = 0; i < 8; i++) {
+          const bandY = centerY - planetRadius + (i * planetRadius * 2 / 7);
+          const bandColor = i % 2 === 0 ? 'rgba(218, 165, 32, 0.8)' : 'rgba(160, 82, 45, 0.6)';
+          
+          ctx.fillStyle = bandColor;
+          ctx.fillRect(centerX - planetRadius, bandY, planetRadius * 2, planetRadius * 2 / 7);
+        }
+        
+        // Main planet gradient
+        gradient.addColorStop(0, '#daa520'); // Goldenrod
+        gradient.addColorStop(0.3, '#b8860b'); // Dark goldenrod
+        gradient.addColorStop(0.6, '#ff8c00'); // Dark orange
+        gradient.addColorStop(1, '#ff4500'); // Orange red
+        
+        ctx.globalCompositeOperation = 'multiply';
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, planetRadius, 0, 2 * Math.PI);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        ctx.globalCompositeOperation = 'source-over';
+        
+        // Great Red Spot
+        if (planetRadius > 20) {
+          ctx.fillStyle = 'rgba(139, 69, 19, 0.8)';
+          ctx.beginPath();
+          ctx.ellipse(centerX + planetRadius * 0.3, centerY + planetRadius * 0.2, planetRadius * 0.2, planetRadius * 0.1, 0, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+        break;
+        
+      case 'moon':
+        gradient.addColorStop(0, '#d3d3d3'); // Light gray
+        gradient.addColorStop(0.4, '#a9a9a9'); // Dark gray
+        gradient.addColorStop(0.7, '#808080'); // Gray
+        gradient.addColorStop(1, '#696969'); // Dim gray
+        
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, planetRadius, 0, 2 * Math.PI);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        
+        // Add craters
+        if (planetRadius > 10) {
+          ctx.fillStyle = 'rgba(105, 105, 105, 0.6)';
+          ctx.beginPath();
+          ctx.arc(centerX + planetRadius * 0.3, centerY - planetRadius * 0.2, planetRadius * 0.15, 0, 2 * Math.PI);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(centerX - planetRadius * 0.4, centerY + planetRadius * 0.3, planetRadius * 0.1, 0, 2 * Math.PI);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(centerX - planetRadius * 0.1, centerY - planetRadius * 0.5, planetRadius * 0.08, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+        break;
+        
+      default:
+        // Fallback to simple gradient
+        gradient.addColorStop(0, currentPlanet.color[1]);
+        gradient.addColorStop(1, currentPlanet.color[0]);
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, planetRadius, 0, 2 * Math.PI);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+    }
     
     // Draw planet's glow
     ctx.beginPath();
