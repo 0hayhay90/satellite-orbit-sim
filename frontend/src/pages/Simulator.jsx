@@ -441,7 +441,11 @@ const Simulator = () => {
                 </label>
                 <div className="flex gap-2">
                   <Button
-                    onClick={() => setZoomLevel(prev => Math.max(0.005, prev * 0.5))}
+                    onClick={() => {
+                      const limits = getZoomLimits();
+                      const newZoom = getZoomIncrement(zoomLevel, 'out');
+                      setZoomLevel(Math.max(limits.min, newZoom));
+                    }}
                     variant="outline"
                     size="sm"
                     className="border-slate-600 text-white hover:bg-slate-700"
@@ -449,7 +453,11 @@ const Simulator = () => {
                     <ZoomOut className="w-4 h-4" />
                   </Button>
                   <Button
-                    onClick={() => setZoomLevel(prev => Math.min(0.1, prev * 2))}
+                    onClick={() => {
+                      const limits = getZoomLimits();
+                      const newZoom = getZoomIncrement(zoomLevel, 'in');
+                      setZoomLevel(Math.min(limits.max, newZoom));
+                    }}
                     variant="outline"
                     size="sm"
                     className="border-slate-600 text-white hover:bg-slate-700"
@@ -457,7 +465,24 @@ const Simulator = () => {
                     <ZoomIn className="w-4 h-4" />
                   </Button>
                   <Button
-                    onClick={() => setZoomLevel(0.03)}
+                    onClick={() => {
+                      switch(selectedPlanet) {
+                        case 'jupiter':
+                          setZoomLevel(0.001);
+                          break;
+                        case 'mars':
+                          setZoomLevel(0.04);
+                          break;
+                        case 'earth':
+                          setZoomLevel(0.03);
+                          break;
+                        case 'moon':
+                          setZoomLevel(0.08);
+                          break;
+                        default:
+                          setZoomLevel(0.03);
+                      }
+                    }}
                     variant="outline"
                     size="sm"
                     className="border-slate-600 text-white hover:bg-slate-700"
