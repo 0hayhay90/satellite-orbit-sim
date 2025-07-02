@@ -223,13 +223,13 @@ const Simulator = () => {
     
     if (orbitRadius < canvas.width) { // Only draw satellite if orbit is visible
       ctx.beginPath();
-      ctx.arc(satX, satY, Math.max(4, satellite.mass / 500), 0, 2 * Math.PI);
+      ctx.arc(satX, satY, 4, 0, 2 * Math.PI);
       ctx.fillStyle = '#f97316';
       ctx.fill();
       
-      // Draw satellite glow (size based on mass)
+      // Draw satellite glow (fixed size)
       ctx.beginPath();
-      ctx.arc(satX, satY, Math.max(8, satellite.mass / 250), 0, 2 * Math.PI);
+      ctx.arc(satX, satY, 8, 0, 2 * Math.PI);
       ctx.fillStyle = 'rgba(249, 115, 22, 0.3)';
       ctx.fill();
       
