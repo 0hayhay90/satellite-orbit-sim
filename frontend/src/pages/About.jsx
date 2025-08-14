@@ -13,7 +13,7 @@ const About = () => {
     {
       icon: <Rocket className="w-6 h-6 text-green-400" />,
       title: "Aerospace Engineering",
-      description: "Pursuing a career in aerospace engineering with focus on satellite systems and space exploration."
+      description: "Pursuing a career in aerospace engineering with a focus on satellite systems and space exploration."
     },
     {
       icon: <Code className="w-6 h-6 text-orange-400" />,
@@ -49,7 +49,7 @@ const About = () => {
           </h1>
           
           <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-            Hi, I'm a passionate high school student with a deep fascination for aerospace engineering and physics. 
+            Hi, My name is Hayden Sullivan, and I'm a passionate high school student with a deep fascination for aerospace engineering and physics. 
             I built OrbitLab to help students like me visualize and understand how spaceflight works.
           </p>
         </div>
